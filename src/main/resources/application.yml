@@ -1,0 +1,41 @@
+server:
+  port: 9905
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tsykxstj?serverTimezone=GMT%2b8
+    username: root
+    password: root
+    hikari:
+      connection-timeout: 10000
+      validation-timeout: 3000
+      idle-timeout: 60000
+      login-timeout: 5
+      max-lifetime: 60000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      read-only: false
+
+  servlet:
+    multipart:
+      max-file-size: 2000MB # 单个文件最大
+      max-request-size: 2500MB # 单个请求文件总和最大
+
+
+#mybatis配置
+mybatis:
+  # mapper配置文件
+  mapper-locations: classpath:com/tphy/tsykxstj/**/dao/xml/*.xml # 扫描所有resources/mapper下的xml文件
+  #  mapper-locations: classpath:mapper/*.xml # 扫描所有resources/mapper下的xml文件
+  #  type-aliases-package: com.myblog.springboot.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 日志 打印sql语句
+    map-underscore-to-camel-case: true # 字段命名驼峰转换
+
+
+# 日志
+logging:
+  level:
+    com.thread0: debug
+  config: classpath:logback.xml

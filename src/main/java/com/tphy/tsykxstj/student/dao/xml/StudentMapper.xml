@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tphy.tsykxstj.student.dao.mapper.StudentMapper">
+
+    <insert id="save" parameterType="com.tphy.tsykxstj.student.dto.Student">
+        insert into student_info
+        (name, gender, idCard, phone, school, classes, address)
+        values
+        (#{name},#{gender},#{idCard},#{phone},#{school},#{classes},#{address})
+    </insert>
+    <update id="update">
+        update student_info
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="gender != null and gender != ''">
+                gender = #{gender},
+            </if>
+            <if test="idCard != null and idCard != ''">
+                idCard = #{idCard},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="school != null and school != ''">
+                school = #{school},
+            </if>
+            <if test="classes != null and classes != ''">
+                classes = #{classes},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address}
+            </if>
+        </set>
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <select id="getStudentListByPage" resultType="com.tphy.tsykxstj.student.dto.Student">
+        select
+               id,
+               name,
+               gender,
+               idCard,
+               phone,
+               school,
+               classes,
+               address,
+               create_time
+        from student_info
+        where 1 = 1
+        <if test="name != null and name != ''">
+           and name like concat('%',#{name},'%')
+        </if>
+        <if test="phone != null and phone != ''">
+           and phone like concat('%',#{phone},'%')
+        </if>
+        <if test="idCard != null and idCard != ''">
+           and idCard = #{idCard}
+        </if>
+        order by id
+    </select>
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        select count(id) from student_info;
+    </select>
+    <select id="getBarCodeData" resultType="com.tphy.tsykxstj.student.dto.Student">
+        select id,
+               name,
+               phone,
+               idCard
+        from student_info
+        where id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>
