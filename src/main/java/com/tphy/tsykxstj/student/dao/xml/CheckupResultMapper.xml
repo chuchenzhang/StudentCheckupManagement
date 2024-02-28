@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tphy.tsykxstj.student.dao.mapper.CheckupResultMapper">
+    
+    <resultMap id="checkupMap" type="com.tphy.tsykxstj.student.dto.CheckupResult">
+        <id property="id" jdbcType="INTEGER" column="id" />
+        <result property="stuId" jdbcType="INTEGER" column="stu_id" />
+        <result property="nakedVisionL" jdbcType="FLOAT" column="naked_vision_l" />
+        <result property="nakedVisionR" jdbcType="FLOAT" column="naked_vision_r" />
+        <result property="preGlassesDegree" jdbcType="VARCHAR" column="pre_glasses_degree" />
+        <result property="medicalHistory" jdbcType="VARCHAR" column="medical_history" />
+        <result property="computerOptometryL" jdbcType="VARCHAR" column="computer_optometry_l" />
+        <result property="computerOptometryR" jdbcType="VARCHAR" column="computer_optometry_r" />
+        <result property="computerOptometryPd" jdbcType="VARCHAR" column="computer_optometry_pd" />
+        <result property="eyePressureL" jdbcType="VARCHAR" column="eye_pressure_l" />
+        <result property="eyePressureR" jdbcType="VARCHAR" column="eye_pressure_r" />
+        <result property="ocularAxisL" jdbcType="VARCHAR" column="ocular_axis_l" />
+        <result property="ocularAxisR" jdbcType="VARCHAR" column="ocular_axis_r" />
+        <result property="ocularPosition" jdbcType="INTEGER" column="ocular_position" />
+        <result property="conjunctiva" jdbcType="INTEGER" column="conjunctiva" />
+        <result property="cornea" jdbcType="INTEGER" column="cornea" />
+        <result property="lens" jdbcType="INTEGER" column="lens" />
+        <result property="eyeGround" jdbcType="INTEGER" column="eye_ground" />
+        <result property="result" jdbcType="INTEGER" column="result" />
+        <result property="doctorSuggestion" jdbcType="VARCHAR" column="doctor_suggestion" />
+        <result property="doctorId" jdbcType="INTEGER" column="doctor_id" />
+        <result property="doctorName" jdbcType="VARCHAR" column="doctor_name" />
+
+        <association property="student" column="stu_id" javaType="com.tphy.tsykxstj.student.dto.Student">
+            <id property="id" jdbcType="INTEGER" column="id" />
+            <result property="name" jdbcType="VARCHAR" column="name" />
+            <result property="school" jdbcType="VARCHAR" column="school" />
+            <result property="classes" jdbcType="VARCHAR" column="classes" />
+            <result property="phone" jdbcType="VARCHAR" column="phone" />
+            <result property="address" jdbcType="VARCHAR" column="address" />
+            <result property="idCard" jdbcType="VARCHAR" column="idCard" />
+        </association>
+    </resultMap>
+
+    <insert id="save" parameterType="com.tphy.tsykxstj.student.dto.CheckupResult">
+        insert into checkup_res(
+         stu_id, naked_vision_l, naked_vision_r, pre_glasses_degree,
+         medical_history, computer_optometry_l, computer_optometry_r,
+         computer_optometry_pd, eye_pressure_l, eye_pressure_r, ocular_axis_l,
+         ocular_axis_r, ocular_position, conjunctiva, cornea, lens, eye_ground,
+         result, doctor_suggestion, doctor_id, doctor_name
+         )
+         values
+         (
+          #{stuId},#{nakedVisionL},#{nakedVisionR},#{preGlassesDegree},
+          #{medicalHistory},#{computerOptometryL},#{computerOptometryR},
+          #{computerOptometryPd},#{eyePressureL},#{eyePressureR},#{ocularAxisL},
+          #{ocularAxisR},#{ocularPosition},#{conjunctiva},#{cornea},#{lens},#{eyeGround},
+          #{result},#{doctorSuggestion},#{doctorId},#{doctorName}
+          )
+    </insert>
+    <update id="update">
+        update checkup_res
+        set
+            naked_vision_l = #{nakedVisionL},
+            naked_vision_r = #{nakedVisionR},
+            pre_glasses_degree = #{preGlassesDegree},
+            medical_history = #{medicalHistory},
+            computer_optometry_l = #{computerOptometryL},
+            computer_optometry_r = #{computerOptometryR},
+            computer_optometry_pd = #{computerOptometryPd},
+            eye_pressure_l = #{eyePressureL},
+            eye_pressure_r = #{eyePressureR},
+            ocular_axis_l = #{ocularAxisL},
+            ocular_axis_r = #{ocularAxisR},
+            ocular_position = #{ocularPosition},
+            conjunctiva = #{conjunctiva},
+            cornea = #{cornea},
+            lens = #{lens},
+            eye_ground = #{eyeGround},
+            result = #{result},
+            doctor_suggestion = #{doctorSuggestion},
+            doctor_id = #{doctorId},
+            doctor_name = #{doctorName}
+        where id = #{id}
+    </update>
+    <select id="findByStuId" resultMap="checkupMap">
+        select a.id,
+               stu_id,
+               naked_vision_l,
+               naked_vision_r,
+               pre_glasses_degree,
+               medical_history,
+               computer_optometry_l,
+               computer_optometry_r,
+               computer_optometry_pd,
+               eye_pressure_l,
+               eye_pressure_r,
+               ocular_axis_l,
+               ocular_axis_r,
+               ocular_position,
+               conjunctiva,
+               cornea,
+               lens,
+               eye_ground,
+               result,
+               doctor_suggestion,
+               doctor_id,
+               doctor_name,
+               a.create_time,
+               b.school,
+               b.classes,
+               b.name,
+               b.phone,
+               b.address,
+               b.idCard
+        from checkup_res a
+        left join student_info b on a.stu_id = b.id
+        where stu_id = #{stuId}
+        limit 1
+    </select>
+
+
+</mapper>

@@ -60,6 +60,11 @@ public class CheckupResult implements Serializable {
     public String computerOptometryR;
 
     /**
+     * 电脑验光瞳距
+     */
+    public String computerOptometryPd;
+
+    /**
      * 眼压-左OS
      */
     public String eyePressureL;
@@ -119,5 +124,7 @@ public class CheckupResult implements Serializable {
     public String doctorName;
 
     public String createTime;
+
+    public Student student;
 
 }

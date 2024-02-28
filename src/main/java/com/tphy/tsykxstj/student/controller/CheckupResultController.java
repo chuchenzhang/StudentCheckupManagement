@@ -2,11 +2,10 @@ package com.tphy.tsykxstj.student.controller;
 
 import com.tphy.tsykxstj.common.utils.AppResponse;
 import com.tphy.tsykxstj.student.dto.CheckupResult;
+import com.tphy.tsykxstj.student.service.impl.CheckupResultServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Copyright (c) 2022 北京天鹏恒宇科技发展有限公司 版权所有
@@ -22,10 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/checkup")
 public class CheckupResultController {
 
+    @Autowired
+    private CheckupResultServiceImpl checkupResultService;
+
     @PostMapping("/save")
     public AppResponse<Integer> save(CheckupResult checkupResult){
 
-        return null;
+        return checkupResultService.save(checkupResult);
+    }
+
+    @GetMapping("/findByStuId")
+    public AppResponse<CheckupResult> findByStuId(@RequestParam Integer stuId){
+
+        return checkupResultService.findByStuId(stuId);
     }
 
 }
