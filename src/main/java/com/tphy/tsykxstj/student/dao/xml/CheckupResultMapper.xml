@@ -10,16 +10,27 @@
         <result property="stuId" jdbcType="INTEGER" column="stu_id" />
         <result property="nakedVisionL" jdbcType="FLOAT" column="naked_vision_l" />
         <result property="nakedVisionR" jdbcType="FLOAT" column="naked_vision_r" />
-        <result property="preGlassesDegree" jdbcType="VARCHAR" column="pre_glasses_degree" />
+        <result property="preGlassesDegree" jdbcType="FLOAT" column="pre_glasses_degree" />
         <result property="medicalHistory" jdbcType="VARCHAR" column="medical_history" />
-        <result property="computerOptometryL" jdbcType="VARCHAR" column="computer_optometry_l" />
-        <result property="computerOptometryR" jdbcType="VARCHAR" column="computer_optometry_r" />
-        <result property="computerOptometryPd" jdbcType="VARCHAR" column="computer_optometry_pd" />
-        <result property="eyePressureL" jdbcType="VARCHAR" column="eye_pressure_l" />
-        <result property="eyePressureR" jdbcType="VARCHAR" column="eye_pressure_r" />
-        <result property="ocularAxisL" jdbcType="VARCHAR" column="ocular_axis_l" />
-        <result property="ocularAxisR" jdbcType="VARCHAR" column="ocular_axis_r" />
+
+        <result property="coSphereL" jdbcType="FLOAT" column="co_sphere_l" />
+        <result property="coSphereR" jdbcType="FLOAT" column="co_sphere_r" />
+        <result property="coCylinderL" jdbcType="FLOAT" column="co_cylinder_l" />
+        <result property="coCylinderR" jdbcType="FLOAT" column="co_cylinder_r" />
+        <result property="coAxisPositionL" jdbcType="FLOAT" column="co_axis_position_l" />
+        <result property="coAxisPositionR" jdbcType="FLOAT" column="co_axis_position_r" />
+        <result property="coPdL" jdbcType="FLOAT" column="co_pd_l" />
+        <result property="coPdR" jdbcType="FLOAT" column="co_pd_r" />
+
+
+        <result property="eyePressureL" jdbcType="FLOAT" column="eye_pressure_l" />
+        <result property="eyePressureR" jdbcType="FLOAT" column="eye_pressure_r" />
+        <result property="ocularAxisL" jdbcType="FLOAT" column="ocular_axis_l" />
+        <result property="ocularAxisR" jdbcType="FLOAT" column="ocular_axis_r" />
         <result property="ocularPosition" jdbcType="INTEGER" column="ocular_position" />
+
+        <result property="hyperopiaReserve" jdbcType="VARCHAR" column="hyperopia_reserve" />
+
         <result property="conjunctiva" jdbcType="INTEGER" column="conjunctiva" />
         <result property="cornea" jdbcType="INTEGER" column="cornea" />
         <result property="lens" jdbcType="INTEGER" column="lens" />
@@ -41,19 +52,23 @@
     </resultMap>
 
     <insert id="save" parameterType="com.tphy.tsykxstj.student.dto.CheckupResult">
-        insert into checkup_res(
-         stu_id, naked_vision_l, naked_vision_r, pre_glasses_degree,
-         medical_history, computer_optometry_l, computer_optometry_r,
-         computer_optometry_pd, eye_pressure_l, eye_pressure_r, ocular_axis_l,
-         ocular_axis_r, ocular_position, conjunctiva, cornea, lens, eye_ground,
-         result, doctor_suggestion, doctor_id, doctor_name
-         )
+        insert into checkup_res
+            (stu_id, naked_vision_l, naked_vision_r,
+             pre_glasses_degree, medical_history,
+             co_sphere_l, co_sphere_r, co_cylinder_l,
+             co_cylinder_r, co_axis_position_l,
+             co_axis_position_r, co_pd_l, co_pd_r,
+             eye_pressure_l, eye_pressure_r, ocular_axis_l,
+             ocular_axis_r, ocular_position, hyperopia_reserve,
+             conjunctiva, cornea, lens, eye_ground, result,
+             doctor_suggestion, doctor_id, doctor_name)
          values
          (
           #{stuId},#{nakedVisionL},#{nakedVisionR},#{preGlassesDegree},
-          #{medicalHistory},#{computerOptometryL},#{computerOptometryR},
-          #{computerOptometryPd},#{eyePressureL},#{eyePressureR},#{ocularAxisL},
-          #{ocularAxisR},#{ocularPosition},#{conjunctiva},#{cornea},#{lens},#{eyeGround},
+          #{medicalHistory},#{coSphereL},#{coSphereR},#{coCylinderL},#{coCylinderR},
+          #{coAxisPositionL},#{coAxisPositionR},#{coPdL},#{coPdR},
+          #{eyePressureL},#{eyePressureR},#{ocularAxisL},
+          #{ocularAxisR},#{ocularPosition},#{hyperopiaReserve},#{conjunctiva},#{cornea},#{lens},#{eyeGround},
           #{result},#{doctorSuggestion},#{doctorId},#{doctorName}
           )
     </insert>
@@ -64,14 +79,20 @@
             naked_vision_r = #{nakedVisionR},
             pre_glasses_degree = #{preGlassesDegree},
             medical_history = #{medicalHistory},
-            computer_optometry_l = #{computerOptometryL},
-            computer_optometry_r = #{computerOptometryR},
-            computer_optometry_pd = #{computerOptometryPd},
+            co_sphere_l = #{coSphereL},
+            co_sphere_r = #{coSphereR},
+            co_cylinder_l = #{coCylinderL},
+            co_cylinder_r = #{coCylinderR},
+            co_axis_position_l = #{coAxisPositionL},
+            co_axis_position_r = #{coAxisPositionR},
+            co_pd_l = #{coPdL},
+            co_pd_r = #{coPdR},
             eye_pressure_l = #{eyePressureL},
             eye_pressure_r = #{eyePressureR},
             ocular_axis_l = #{ocularAxisL},
             ocular_axis_r = #{ocularAxisR},
             ocular_position = #{ocularPosition},
+            hyperopia_reserve = #{hyperopiaReserve},
             conjunctiva = #{conjunctiva},
             cornea = #{cornea},
             lens = #{lens},
@@ -84,27 +105,32 @@
     </update>
     <select id="findByStuId" resultMap="checkupMap">
         select a.id,
-               stu_id,
-               naked_vision_l,
-               naked_vision_r,
-               pre_glasses_degree,
-               medical_history,
-               computer_optometry_l,
-               computer_optometry_r,
-               computer_optometry_pd,
-               eye_pressure_l,
-               eye_pressure_r,
-               ocular_axis_l,
-               ocular_axis_r,
-               ocular_position,
-               conjunctiva,
-               cornea,
-               lens,
-               eye_ground,
-               result,
-               doctor_suggestion,
-               doctor_id,
-               doctor_name,
+               a.stu_id,
+               a.naked_vision_l,
+               a.naked_vision_r,
+               a.pre_glasses_degree,
+               a.medical_history,
+               a.co_sphere_l,
+               a.co_sphere_r,
+               a.co_cylinder_l,
+               a.co_cylinder_r,
+               a.co_axis_position_l,
+               a.co_axis_position_r,
+               a.co_pd_l, a.co_pd_r,
+               a.eye_pressure_l,
+               a.eye_pressure_r,
+               a.ocular_axis_l,
+               a.ocular_axis_r,
+               a.ocular_position,
+               a.hyperopia_reserve,
+               a.conjunctiva,
+               a.cornea,
+               a.lens,
+               a.eye_ground,
+               a.result,
+               a.doctor_suggestion,
+               a.doctor_id,
+               a.doctor_name,
                a.create_time,
                b.school,
                b.classes,
@@ -115,6 +141,7 @@
         from checkup_res a
         left join student_info b on a.stu_id = b.id
         where stu_id = #{stuId}
+        order by a.create_time desc
         limit 1
     </select>
 

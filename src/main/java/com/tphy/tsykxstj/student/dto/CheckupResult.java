@@ -1,9 +1,6 @@
 package com.tphy.tsykxstj.student.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -32,17 +29,17 @@ public class CheckupResult implements Serializable {
     /**
      * 裸眼视力-左OS
      */
-    public float nakedVisionL;
+    public Float nakedVisionL;
 
     /**
      * 裸眼视力-右OD
      */
-    public float nakedVisionR;
+    public Float nakedVisionR;
 
     /**
      * 旧镜
      */
-    public String preGlassesDegree;
+    public Float preGlassesDegree;
 
     /**
      * 病史
@@ -50,44 +47,74 @@ public class CheckupResult implements Serializable {
     public String medicalHistory;
 
     /**
-     * 电脑验光左OS
+     * 电脑验光-球镜-左OS
      */
-    public String computerOptometryL;
+    public Float coSphereL;
 
     /**
-     * 电脑验光右OD
+     * 电脑验光-球镜-右OD
      */
-    public String computerOptometryR;
+    public Float coSphereR;
 
     /**
-     * 电脑验光瞳距
+     * 电脑验光-柱镜-左OS
      */
-    public String computerOptometryPd;
+    public Float coCylinderL;
+
+    /**
+     * 电脑验光-柱镜-右OD
+     */
+    public Float coCylinderR;
+
+    /**
+     * 电脑验光-轴位-左OS
+     */
+    public Float coAxisPositionL;
+
+    /**
+     * 电脑验光-轴位-右OD
+     */
+    public Float coAxisPositionR;
+
+    /**
+     * 电脑验光-瞳距-左OS
+     */
+    public Float coPdL;
+
+    /**
+     * 电脑验光-瞳距-右OD
+     */
+    public Float coPdR;
 
     /**
      * 眼压-左OS
      */
-    public String eyePressureL;
+    public Float eyePressureL;
 
     /**
      * 眼压-右OD
      */
-    public String eyePressureR;
+    public Float eyePressureR;
 
     /**
      * 眼轴-左OS
      */
-    public String ocularAxisL;
+    public Float ocularAxisL;
 
     /**
      * 眼轴-右OD
      */
-    public String ocularAxisR;
+    public Float ocularAxisR;
 
     /**
      * 眼位 1-正位 2-斜
      */
     public Integer ocularPosition;
+
+    /**
+     * 远视储备
+     */
+    public String hyperopiaReserve;
 
     /**
      * 结膜是否正常 1-正常 0-不勾选
