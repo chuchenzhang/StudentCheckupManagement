@@ -2,6 +2,7 @@ package com.tphy.tsykxstj.student.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -29,6 +30,7 @@ public class CheckupResult implements Serializable {
     /**
      * 裸眼视力-左OS
      */
+    @NotBlank(message="裸眼视力左OS不能为空")
     public Float nakedVisionL;
 
     /**

@@ -33,4 +33,6 @@ public interface StudentMapper {
     Integer getTotalCount();
 
     List<Student> getBarCodeData(@Param("ids") Integer[] ids);
+
+
 }

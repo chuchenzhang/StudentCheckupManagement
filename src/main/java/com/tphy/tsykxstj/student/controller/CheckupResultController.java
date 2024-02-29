@@ -25,7 +25,9 @@ public class CheckupResultController {
     private CheckupResultServiceImpl checkupResultService;
 
     @PostMapping("/save")
-    public AppResponse<Integer> save(CheckupResult checkupResult){
+    public AppResponse<Integer> save(@RequestBody CheckupResult checkupResult){
+
+        System.out.println("checkupResult = " + checkupResult);
 
         return checkupResultService.save(checkupResult);
     }

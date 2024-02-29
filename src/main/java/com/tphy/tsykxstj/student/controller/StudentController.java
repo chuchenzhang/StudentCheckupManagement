@@ -58,7 +58,7 @@ public class StudentController {
      * @return AppResponse<Integer>
      */
     @PostMapping("/import")
-    public AppResponse<Integer> importExcel(@RequestParam("file") MultipartFile file){
+    public AppResponse<Integer> importExcel(MultipartFile file){
 
         return studentService.importExcel(file);
     }

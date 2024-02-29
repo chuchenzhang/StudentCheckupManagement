@@ -68,6 +68,7 @@ public class AppResponse<T> {
         response.setCode(ResultCode.SUCCESS);
         response.setStatus(HttpStatus.OK);
         response.setMsg(msg);
+        response.setData(null);
         return response;
     }
 
@@ -94,6 +95,7 @@ public class AppResponse<T> {
         response.setCode(ResultCode.ERROR);
         response.setStatus(HttpStatus.BAD_REQUEST);
         response.setMsg("error");
+        response.setData(null);
         return response;
     }
 
@@ -102,6 +104,7 @@ public class AppResponse<T> {
         response.setCode(ResultCode.ERROR);
         response.setStatus(HttpStatus.BAD_REQUEST);
         response.setMsg(msg);;
+        response.setData(null);
         return response;
     }
 

@@ -2,7 +2,10 @@ package com.tphy.tsykxstj.student.dao.mapper;
 
 import com.tphy.tsykxstj.common.utils.AppResponse;
 import com.tphy.tsykxstj.student.dto.CheckupResult;
+import com.tphy.tsykxstj.student.dto.Student;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 /**
  * Copyright (c) 2022 北京天鹏恒宇科技发展有限公司 版权所有
@@ -22,4 +25,6 @@ public interface CheckupResultMapper {
     Integer update(CheckupResult checkupResult);
 
     CheckupResult findByStuId(Integer stuId);
+
+    List<CheckupResult> getPushData();
 }
