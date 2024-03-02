@@ -36,13 +36,16 @@ public class StudentController {
      * @return AppResponse<List<Student>>
      */
     @GetMapping("/list")
-    public AppResponse<HashMap<String,Object>> getStudentListByPage(@RequestParam(required = false) String name,
-                                                                    @RequestParam(required = false) String phone,
-                                                                    @RequestParam(required = false) String idCard,
-                                                                    @RequestParam Integer pageNum,
-                                                                    @RequestParam Integer pageSize){
+    public AppResponse<HashMap<String,Object>> getStudentListByPage(@RequestParam(value = "name",required = false) String name,
+                                                                    @RequestParam(value = "phone",required = false) String phone,
+                                                                    @RequestParam(value = "idCard",required = false) String idCard,
+                                                                    @RequestParam(value = "status[]",required = false) Integer[] status,
+                                                                    @RequestParam("pageNum") Integer pageNum,
+                                                                    @RequestParam("pageSize") Integer pageSize){
 
-        return studentService.getStudentListByPage(name,phone,idCard,pageNum,pageSize);
+        System.out.println("status = " + Arrays.toString(status));
+
+        return studentService.getStudentListByPage(name,phone,idCard,pageNum,pageSize,status);
     }
 
     @PostMapping("/saveStudentInfo")

@@ -14,10 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Copyright (c) 2022 北京天鹏恒宇科技发展有限公司 版权所有
@@ -38,19 +35,25 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public AppResponse<HashMap<String,Object>> getStudentListByPage(String name,
-                                                           String phone,
-                                                           String idCard,
-                                                           Integer pageNum,
-                                                           Integer pageSize) {
+                                                                    String phone,
+                                                                    String idCard,
+                                                                    Integer pageNum,
+                                                                    Integer pageSize,
+                                                                    Integer[] status) {
         AppResponse<HashMap<String,Object>> res = new AppResponse<>();
 
         int offset = (pageNum - 1) * pageSize;
 
         RowBounds rowBounds = new RowBounds(offset,pageSize);
+        if(status == null || status.length == 0) {
+            // 0-未体检 1-已体检 2-已推送
+            status = new Integer[]{0,1,2};
+        }
+        System.out.println("status = " + Arrays.toString(status));
 
-        List<Student> studentList = studentMapper.getStudentListByPage(name,phone,idCard,rowBounds);
+        List<Student> studentList = studentMapper.getStudentListByPage(name,phone,idCard,status,rowBounds);
 
-        Integer total = studentMapper.getTotalCount();
+        Integer total = studentMapper.getTotalCount(name,phone,idCard,status);
 
         HashMap<String,Object> data = new HashMap<>();
 
@@ -71,6 +74,7 @@ public class StudentServiceImpl implements StudentService {
      * @param student 学生实体类
      * @return        保存结果 1-成功 0-失败
      */
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     @Override
     public AppResponse<Integer> saveStudentInfo(Student student) {
 
@@ -95,10 +99,13 @@ public class StudentServiceImpl implements StudentService {
         Integer rowAffect = 0;
         if(student.getId() == null){
             // 新增
-            rowAffect = studentMapper.save(student);
+            Integer stuId = studentMapper.save(student);
+            System.out.println("stuId = " + stuId);
+            rowAffect = studentMapper.saveStatus(stuId,0);
             if(rowAffect > 0){
                 return res.success("保存成功",rowAffect);
             }else{
+                log.error("保存失败,数据库回滚");
                 return res.error("保存失败",rowAffect);
             }
         }else{
@@ -160,7 +167,10 @@ public class StudentServiceImpl implements StudentService {
             int rowAffect = 0;
             int i = 0;
             for(Student stu : studentList){
-                Integer num = studentMapper.save(stu);
+                Integer stuId = studentMapper.save(stu);
+                System.out.println("stu.getId() = " + stu.getId());
+                // 新增状态
+                Integer num = studentMapper.saveStatus(stu.getId(),0);
                 if(num > 0){
                     rowAffect += num;
                 }else{

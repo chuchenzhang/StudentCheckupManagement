@@ -6,6 +6,7 @@ import com.tphy.tsykxstj.student.dao.mapper.CheckupResultMapper;
 import com.tphy.tsykxstj.student.dao.mapper.StudentMapper;
 import com.tphy.tsykxstj.student.dto.CheckupResult;
 import com.tphy.tsykxstj.student.dto.Student;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -25,6 +26,7 @@ import java.util.List;
  * @date: 2024/2/29  14:52
  * @version: 1.0
  */
+@Slf4j
 @Configuration
 @EnableScheduling
 public class SMSTask {
@@ -35,7 +37,7 @@ public class SMSTask {
     private CheckupResultMapper checkupMapper;
 
     // @Scheduled(cron = "0/30 * * * * ?")//每秒钟执行一次，以空格分隔
-    @Scheduled(cron="0 25 8 * * *")//每秒钟执行一次，以空格分隔
+    @Scheduled(cron="0 44 13 * * *")//每天11:25:00执行一次，以空格分隔
     public void cron() {
 
         AppResponse<String> res = new AppResponse<>();
@@ -50,24 +52,32 @@ public class SMSTask {
             String lxmc = stu.getCreateTime();
             String lysl = "裸眼视力左OS：" + stu.getNakedVisionL() + "," +
                     "裸眼视力右OD：" + stu.getNakedVisionR() + ",";
-            String qgd = "球镜左OS：" + stu.getCoSphereL() + "DS," +
-                    "球镜右OD：" + stu.getCoSphereR() + "DS," +
-                    "柱镜左OS：" + stu.getCoCylinderL() + "DC," +
-                    "柱镜右OD：" + stu.getCoCylinderR() + "DC," +
-                    "轴位左OS：" + stu.getCoAxisPositionL() + "DA," +
-                    "轴位右OD：" + stu.getCoAxisPositionR() + "DA," +
-                    "瞳距左OS：" + stu.getCoPdL() + "," +
-                    "瞳距右OD：" + stu.getCoPdR();
-            String dz = "http://mtw.so/6pcYCJ";
+            // String qgd = "球镜左OS：" + stu.getCoSphereL() + "DS," +
+            //         "球镜右OD：" + stu.getCoSphereR() + "DS," +
+            //         "柱镜左OS：" + stu.getCoCylinderL() + "DC," +
+            //         "柱镜右OD：" + stu.getCoCylinderR() + "DC," +
+            //         "轴位左OS：" + stu.getCoAxisPositionL() + "DA," +
+            //         "轴位右OD：" + stu.getCoAxisPositionR() + "DA," +
+            //         "瞳距左OS：" + stu.getCoPdL() + "," +
+            //         "瞳距右OD：" + stu.getCoPdR();
+            String qgd = "球镜左OS：" + stu.getCoSphereL() + "DS,";
+            System.out.println("qgd = " + qgd);
 
 
-            String verifyCodeJsonFormat = "";
-            String templateCode = "SMS_205391486";
+            String verifyCodeJsonFormat = "{\"name\":\""+name+"\",\"lxmc\":\""+lxmc+"\",\"lysl\":\""+lysl+"\",\"qgd\":\""+qgd+"\"}";
+            String templateCode = "SMS_465315828";
             // 发送短信
-            // res = SMSAPI.SendMessage(templateCode,"15843286707",verifyCodeJsonFormat);
+            res = SMSAPI.SendMessage(templateCode,phone,verifyCodeJsonFormat);
+            System.out.println("res = " + res);
+            if(res.getCode() == 200){
+                Integer affect = checkupMapper.updateStatus(stu.getStudent().getId(),2);
+                if(affect > 0){
+                    log.info("用户ID：" + stu.getStudent().getId() + "短信发送成功,状态更新成功");
+                }else{
+                    log.error("用户ID：" + stu.getStudent().getId() + "短信发送成功,状态更新失败");
+                }
+            }
         }
-
-
 
         System.out.println("spring task 这是定时任务，时间是：" + PATTERN.format(now));
     }

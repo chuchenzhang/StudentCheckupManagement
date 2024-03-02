@@ -6,6 +6,8 @@ import com.tphy.tsykxstj.student.dto.CheckupResult;
 import com.tphy.tsykxstj.student.service.CheckupResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.text.ParseException;
@@ -28,6 +30,7 @@ public class CheckupResultServiceImpl implements CheckupResultService {
     @Autowired
     private CheckupResultMapper checkupMapper;
 
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
     @Override
     public AppResponse<Integer> save(CheckupResult checkupResult) {
 
@@ -39,17 +42,20 @@ public class CheckupResultServiceImpl implements CheckupResultService {
         Integer rowAffect = 0;
         if(checkupResult.getId() == null){
             rowAffect = checkupMapper.save(checkupResult);
-            if(rowAffect > 0){
-                return res.success("保存成功",rowAffect);
+            System.out.println("checkupResult.getId() = " + checkupResult.getId());
+            System.out.println("checkupResult.getStuId() = " + checkupResult.getStuId());
+            Integer num = checkupMapper.updateStatus(checkupResult.getStuId(),1);
+            if(rowAffect > 0 && num > 0){
+                return res.success("保存成功",checkupResult.getId());
             }else{
                 return res.error("保存失败",rowAffect);
             }
         }else{
             rowAffect = checkupMapper.update(checkupResult);
             if(rowAffect > 0){
-                return res.success("更新成功",rowAffect);
+                return res.success("更新成功",checkupResult.getId());
             }else{
-                return res.error("更新失败",rowAffect);
+                return res.error("更新失败",checkupResult.getId());
             }
         }
     }

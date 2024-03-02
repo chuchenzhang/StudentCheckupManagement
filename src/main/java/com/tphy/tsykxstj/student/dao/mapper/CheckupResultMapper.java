@@ -4,6 +4,7 @@ import com.tphy.tsykxstj.common.utils.AppResponse;
 import com.tphy.tsykxstj.student.dto.CheckupResult;
 import com.tphy.tsykxstj.student.dto.Student;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface CheckupResultMapper {
     CheckupResult findByStuId(Integer stuId);
 
     List<CheckupResult> getPushData();
+
+    Integer updateStatus(@Param("stuId") Integer stuId, @Param("status") int status);
 }

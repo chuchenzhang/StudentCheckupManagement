@@ -25,7 +25,8 @@ public interface StudentService {
                                                              String phone,
                                                              String idCard,
                                                              Integer pageNum,
-                                                             Integer pageSize);
+                                                             Integer pageSize,
+                                                             Integer[] status);
 
     AppResponse<Integer> saveStudentInfo(Student student);
 

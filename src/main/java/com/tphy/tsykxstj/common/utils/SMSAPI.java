@@ -126,6 +126,7 @@ public class SMSAPI {
         {
             CommonResponse response = client.getCommonResponse(request);
             String message = new String(response.getHttpResponse().getHttpContent(), StandardCharsets.UTF_8);
+            System.out.println("message = " + message);
 
             MsgModel msgModel = JSONObject.parseObject(JSONObject.toJSONString(JSON.parse(message)),MsgModel.class);
 

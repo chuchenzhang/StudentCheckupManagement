@@ -26,13 +26,18 @@ public interface StudentMapper {
     List<Student> getStudentListByPage(@Param("name") String name,
                                        @Param("phone") String phone,
                                        @Param("idCard") String idCard,
+                                       @Param("status") Integer[] status,
                                        RowBounds rowBounds);
 
     Integer update(Student student);
 
-    Integer getTotalCount();
+    Integer getTotalCount(@Param("name") String name,
+                          @Param("phone") String phone,
+                          @Param("idCard") String idCard,
+                          @Param("status") Integer[] status);
 
     List<Student> getBarCodeData(@Param("ids") Integer[] ids);
 
 
+    Integer saveStatus(@Param("stuId") Integer stuId,@Param("status") Integer status);
 }

@@ -39,6 +39,7 @@
         <result property="doctorSuggestion" jdbcType="VARCHAR" column="doctor_suggestion" />
         <result property="doctorId" jdbcType="INTEGER" column="doctor_id" />
         <result property="doctorName" jdbcType="VARCHAR" column="doctor_name" />
+        <result property="createTime" jdbcType="VARCHAR" column="create_time" />
 
         <association property="student" column="stu_id" javaType="com.tphy.tsykxstj.student.dto.Student">
             <id property="id" jdbcType="INTEGER" column="id" />
@@ -51,7 +52,7 @@
         </association>
     </resultMap>
 
-    <insert id="save" parameterType="com.tphy.tsykxstj.student.dto.CheckupResult">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.tphy.tsykxstj.student.dto.CheckupResult">
         insert into checkup_res
             (stu_id, naked_vision_l, naked_vision_r,
              pre_glasses_degree, medical_history,
@@ -103,6 +104,11 @@
             doctor_name = #{doctorName}
         where id = #{id}
     </update>
+    <update id="updateStatus">
+        update student_status
+        set status = #{status}
+        where stu_id = #{stuId}
+    </update>
     <select id="findByStuId" resultMap="checkupMap">
         select a.id,
                a.stu_id,
@@ -146,7 +152,8 @@
     </select>
 
     <select id="getPushData" resultMap="checkupMap">
-        select b.phone,
+        select b.id,
+               b.phone,
                b.name,
                b.create_time,
                a.co_sphere_l,
@@ -159,54 +166,59 @@
                a.co_pd_r
         from checkup_res a
                  left join student_info b on a.stu_id = b.id
-        where
-            (a.naked_vision_l != 1.0 or a.naked_vision_r != 1.0 or a.naked_vision_l is null or a.naked_vision_r is null)
-           or
-            (a.co_sphere_l != 0.0 or a.co_sphere_r != 0.0 or a.co_sphere_l is null or a.co_sphere_r is null)
-           or
-            (a.co_cylinder_l != 0.0 or a.co_cylinder_r != 0.0 or a.co_cylinder_l is null or a.co_sphere_r is null)
-           or
-            (a.co_axis_position_l != 0.0 or a.co_axis_position_r != 0.0 or a.co_axis_position_l is null or a.co_axis_position_r is null)
-           or
-            (a.co_pd_l != 0.0 or a.co_pd_r != 0.0 or a.co_pd_l is null or a.co_pd_r is null)
-           or
-            (GetAgeFromIDCard(b.idCard) = 9 and a.ocular_axis_l not between 21.45 and 24.46)
-           or
-            (GetAgeFromIDCard(b.idCard) = 9 and a.ocular_axis_r not between 21.45 and 24.46)
-           or
-            (GetAgeFromIDCard(b.idCard) = 10 and a.ocular_axis_l not between 21.60 and 24.67)
-           or
-            (GetAgeFromIDCard(b.idCard) = 10 and a.ocular_axis_r not between 21.60 and 24.67)
-           or
-            (GetAgeFromIDCard(b.idCard) = 11 and a.ocular_axis_l not between 21.71 and 24.80)
-           or
-            (GetAgeFromIDCard(b.idCard) = 11 and a.ocular_axis_r not between 21.71 and 24.80)
-           or
-            (GetAgeFromIDCard(b.idCard) = 12 and a.ocular_axis_l not between 21.79 and 24.84)
-           or
-            (GetAgeFromIDCard(b.idCard) = 12 and a.ocular_axis_r not between 21.79 and 24.84)
-           or
-            (GetAgeFromIDCard(b.idCard) = 13 and a.ocular_axis_l not between 22.07 and 24.65)
-           or
-            (GetAgeFromIDCard(b.idCard) = 13 and a.ocular_axis_r not between 22.07 and 24.65)
-           or
-            (GetAgeFromIDCard(b.idCard) = 14 and a.ocular_axis_l not between 21.92 and 24.82)
-           or
-            (GetAgeFromIDCard(b.idCard) = 14 and a.ocular_axis_r not between 21.92 and 24.82)
-           or
-            (GetAgeFromIDCard(b.idCard) = 15 and a.ocular_axis_l not between 22.10 and 24.68)
-           or
-            (GetAgeFromIDCard(b.idCard) = 15 and a.ocular_axis_r not between 22.10 and 24.68)
-           or
-            ocular_position = 2
-           or
-            conjunctiva = 0
-           or
-            cornea = 0
-           or
-            lens = 0
-           or
-            eye_ground = 2
+                 left join student_status c on a.stu_id = c.stu_id
+        where c.status = 1
+          and (
+                (a.naked_vision_l != 1.0 or a.naked_vision_r != 1.0 or a.naked_vision_l is null or
+                 a.naked_vision_r is null)
+                or
+                (a.co_sphere_l != 0.0 or a.co_sphere_r != 0.0 or a.co_sphere_l is null or a.co_sphere_r is null)
+                or
+                (a.co_cylinder_l != 0.0 or a.co_cylinder_r != 0.0 or a.co_cylinder_l is null or a.co_sphere_r is null)
+                or
+                (a.co_axis_position_l != 0.0 or a.co_axis_position_r != 0.0 or a.co_axis_position_l is null or
+                 a.co_axis_position_r is null)
+                or
+                (a.co_pd_l != 0.0 or a.co_pd_r != 0.0 or a.co_pd_l is null or a.co_pd_r is null)
+                or
+                (GetAgeFromIDCard(b.idCard) = 9 and a.ocular_axis_l not between 21.45 and 24.46)
+                or
+                (GetAgeFromIDCard(b.idCard) = 9 and a.ocular_axis_r not between 21.45 and 24.46)
+                or
+                (GetAgeFromIDCard(b.idCard) = 10 and a.ocular_axis_l not between 21.60 and 24.67)
+                or
+                (GetAgeFromIDCard(b.idCard) = 10 and a.ocular_axis_r not between 21.60 and 24.67)
+                or
+                (GetAgeFromIDCard(b.idCard) = 11 and a.ocular_axis_l not between 21.71 and 24.80)
+                or
+                (GetAgeFromIDCard(b.idCard) = 11 and a.ocular_axis_r not between 21.71 and 24.80)
+                or
+                (GetAgeFromIDCard(b.idCard) = 12 and a.ocular_axis_l not between 21.79 and 24.84)
+                or
+                (GetAgeFromIDCard(b.idCard) = 12 and a.ocular_axis_r not between 21.79 and 24.84)
+                or
+                (GetAgeFromIDCard(b.idCard) = 13 and a.ocular_axis_l not between 22.07 and 24.65)
+                or
+                (GetAgeFromIDCard(b.idCard) = 13 and a.ocular_axis_r not between 22.07 and 24.65)
+                or
+                (GetAgeFromIDCard(b.idCard) = 14 and a.ocular_axis_l not between 21.92 and 24.82)
+                or
+                (GetAgeFromIDCard(b.idCard) = 14 and a.ocular_axis_r not between 21.92 and 24.82)
+                or
+                (GetAgeFromIDCard(b.idCard) = 15 and a.ocular_axis_l not between 22.10 and 24.68)
+                or
+                (GetAgeFromIDCard(b.idCard) = 15 and a.ocular_axis_r not between 22.10 and 24.68)
+                or
+                ocular_position = 2
+                or
+                conjunctiva = 0
+                or
+                cornea = 0
+                or
+                lens = 0
+                or
+                eye_ground = 2
+            )
     </select>
 
 

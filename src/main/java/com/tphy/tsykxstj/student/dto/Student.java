@@ -43,5 +43,7 @@ public class Student implements Serializable {
 
     public String birth;
 
+    public String status;
+
     public String createTime;
 }
