@@ -24,6 +24,17 @@ public class CheckupResultController {
     @Autowired
     private CheckupResultServiceImpl checkupResultService;
 
+    /**
+     * // TODO 参数选填 、 左OS -> 左眼
+     * // TODO 短信屈光度 球镜左右 柱镜左右
+     * // TODO 身份证,手机号不是必填
+     * // TODO 检查填写表: 体检结果仅供参考,不作诊断依据 在短信模板加到最后一行
+     * // TODO 去掉地址
+     * // TODO 添加学校班级字典
+     * // TODO 除了姓名,学生和检查结果信息都可以为空
+     * @param checkupResult
+     * @return
+     */
     @PostMapping("/save")
     public AppResponse<Integer> save(@RequestBody CheckupResult checkupResult){
 

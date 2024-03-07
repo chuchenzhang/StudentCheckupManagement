@@ -19,7 +19,7 @@ import java.util.Date;
  * Copyright (c) 2022 TPHY.Co.,Ltd.  All rights reserved
  *
  * @ClassName: CheckupResultServiceImpl
- * @ClassDesc: TODO
+ * @ClassDesc: 检查结果服务层实现
  * @author: 张忠孝
  * @date: 2024/2/28  15:26
  * @version: 1.0

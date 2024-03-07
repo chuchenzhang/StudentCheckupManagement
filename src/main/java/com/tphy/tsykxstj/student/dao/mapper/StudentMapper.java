@@ -40,4 +40,6 @@ public interface StudentMapper {
 
 
     Integer saveStatus(@Param("stuId") Integer stuId,@Param("status") Integer status);
+
+    int isRepeatIdCard(@Param("idCard") String idCard);
 }

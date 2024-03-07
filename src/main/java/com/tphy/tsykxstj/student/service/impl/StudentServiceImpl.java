@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Copyright (c) 2022 北京天鹏恒宇科技发展有限公司 版权所有
@@ -84,24 +85,34 @@ public class StudentServiceImpl implements StudentService {
             return res.error("请填写姓名");
         }
         if(student.getIdCard().isEmpty()){
-            return res.error("请填写身份证号");
+            // return res.error("请填写身份证号");
+        }else{
+            String pattern = "^(\\d{15}$|^\\d{18}$|^\\d{17}(\\d|X|x))$";
+
+            // 使用正则表达式进行匹配
+            if(!Pattern.matches(pattern, student.getIdCard())){
+                return res.error("身份证号无效");
+            }
+            if(studentMapper.isRepeatIdCard(student.getIdCard()) > 0){
+                return res.error("身份证信息已存在");
+            }
         }
-        if(student.getPhone().isEmpty()){
-            return res.error("请填写手机号");
-        }
-        if(student.getSchool().isEmpty()){
-            return res.error("请填写学校");
-        }
-        if(student.getClasses().isEmpty()){
-            return res .error("请填写班级");
-        }
+        // if(student.getPhone().isEmpty()){
+        //     return res.error("请填写手机号");
+        // }
+        // if(student.getSchool().isEmpty()){
+        //     return res.error("请填写学校");
+        // }
+        // if(student.getClasses().isEmpty()){
+        //     return res .error("请填写班级");
+        // }
 
         Integer rowAffect = 0;
         if(student.getId() == null){
             // 新增
             Integer stuId = studentMapper.save(student);
-            System.out.println("stuId = " + stuId);
-            rowAffect = studentMapper.saveStatus(stuId,0);
+            System.out.println("stuId = " + student.getId());
+            rowAffect = studentMapper.saveStatus(student.getId(),0);
             if(rowAffect > 0){
                 return res.success("保存成功",rowAffect);
             }else{

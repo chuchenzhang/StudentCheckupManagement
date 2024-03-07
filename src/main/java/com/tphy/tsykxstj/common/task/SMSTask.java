@@ -37,7 +37,7 @@ public class SMSTask {
     private CheckupResultMapper checkupMapper;
 
     // @Scheduled(cron = "0/30 * * * * ?")//每秒钟执行一次，以空格分隔
-    @Scheduled(cron="0 44 13 * * *")//每天11:25:00执行一次，以空格分隔
+    @Scheduled(cron="0 32 17 * * *")//每天11:25:00执行一次，以空格分隔
     public void cron() {
 
         AppResponse<String> res = new AppResponse<>();
@@ -50,17 +50,24 @@ public class SMSTask {
             String phone = stu.getStudent().getPhone();
             String name = stu.getStudent().getName();
             String lxmc = stu.getCreateTime();
-            String lysl = "裸眼视力左OS：" + stu.getNakedVisionL() + "," +
-                    "裸眼视力右OD：" + stu.getNakedVisionR() + ",";
-            // String qgd = "球镜左OS：" + stu.getCoSphereL() + "DS," +
-            //         "球镜右OD：" + stu.getCoSphereR() + "DS," +
-            //         "柱镜左OS：" + stu.getCoCylinderL() + "DC," +
-            //         "柱镜右OD：" + stu.getCoCylinderR() + "DC," +
-            //         "轴位左OS：" + stu.getCoAxisPositionL() + "DA," +
-            //         "轴位右OD：" + stu.getCoAxisPositionR() + "DA," +
-            //         "瞳距左OS：" + stu.getCoPdL() + "," +
-            //         "瞳距右OD：" + stu.getCoPdR();
-            String qgd = "球镜左OS：" + stu.getCoSphereL() + "DS,";
+            String lysl = "裸眼视力左眼：" + stu.getNakedVisionL() + "," +
+                    "裸眼视力右眼：" + stu.getNakedVisionR() + "";
+
+            String str1 = "";
+            String str2 = "";
+            // if(stu.getCoSphereL() != null && stu.getCoSphereR() == null){
+            //     str1 = "球镜左眼：" + stu.getCoSphereL() + "DS";
+            //
+            // }
+            // if(stu.getCoSphereR() != null){
+            //     str2 = "球镜右眼：" + stu.getCoSphereR() + "DS";
+            // }
+            // String qgd = str1 + "，" + str2;
+            String qgd = "球镜左眼：" + stu.getCoSphereL() + "DS," +
+                    "球镜右眼：" + stu.getCoSphereR() + "DS," +
+                    "柱镜左眼：" + stu.getCoCylinderL() + "DC," +
+                    "柱镜右眼：" + stu.getCoCylinderR() + "DC";
+
             System.out.println("qgd = " + qgd);
 
 

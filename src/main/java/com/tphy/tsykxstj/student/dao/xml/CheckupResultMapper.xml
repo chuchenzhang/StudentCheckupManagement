@@ -62,7 +62,7 @@
              eye_pressure_l, eye_pressure_r, ocular_axis_l,
              ocular_axis_r, ocular_position, hyperopia_reserve,
              conjunctiva, cornea, lens, eye_ground, result,
-             doctor_suggestion, doctor_id, doctor_name)
+             doctor_suggestion, doctor_id, doctor_name,create_time)
          values
          (
           #{stuId},#{nakedVisionL},#{nakedVisionR},#{preGlassesDegree},
@@ -70,7 +70,7 @@
           #{coAxisPositionL},#{coAxisPositionR},#{coPdL},#{coPdR},
           #{eyePressureL},#{eyePressureR},#{ocularAxisL},
           #{ocularAxisR},#{ocularPosition},#{hyperopiaReserve},#{conjunctiva},#{cornea},#{lens},#{eyeGround},
-          #{result},#{doctorSuggestion},#{doctorId},#{doctorName}
+          #{result},#{doctorSuggestion},#{doctorId},#{doctorName},NOW()
           )
     </insert>
     <update id="update">

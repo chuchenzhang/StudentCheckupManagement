@@ -7,9 +7,9 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.tphy.tsykxstj.student.dto.Student">
         insert into student_info
-        (name, gender, idCard, phone, school, classes, address)
+        (name, gender, idCard, phone, school, classes, address, create_time)
         values
-        (#{name},#{gender},#{idCard},#{phone},#{school},#{classes},#{address})
+        (#{name},#{gender},#{idCard},#{phone},#{school},#{classes},#{address},NOW())
     </insert>
     <insert id="saveStatus">
         insert into student_status
@@ -74,7 +74,7 @@
         <if test="idCard != null and idCard != ''">
            and idCard = #{idCard}
         </if>
-        order by id
+        order by create_time desc,id
     </select>
     <select id="getTotalCount" resultType="java.lang.Integer">
         select count(id) from student_info a
@@ -103,6 +103,11 @@
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </select>
+    <select id="isRepeatIdCard" resultType="java.lang.Integer">
+        select count(id)
+        from student_info
+        where idCard = #{idCard}
     </select>
 
 </mapper>
