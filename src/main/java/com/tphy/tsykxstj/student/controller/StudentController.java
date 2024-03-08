@@ -50,15 +50,17 @@ public class StudentController {
      */
     @GetMapping("/list")
     public AppResponse<HashMap<String,Object>> getStudentListByPage(@RequestParam(value = "name",required = false) String name,
-                                                                    @RequestParam(value = "phone",required = false) String phone,
-                                                                    @RequestParam(value = "idCard",required = false) String idCard,
+                                                                    @RequestParam(value = "studentid", required = false) String studentid,
+                                                                    @RequestParam(value = "school",required = false) String school,
+                                                                    @RequestParam(value = "classes",required = false) String classes,
+                                                                    @RequestParam(value = "grade",required = false) String grade,
                                                                     @RequestParam(value = "status[]",required = false) Integer[] status,
                                                                     @RequestParam("pageNum") Integer pageNum,
                                                                     @RequestParam("pageSize") Integer pageSize){
 
         System.out.println("status = " + Arrays.toString(status));
 
-        return studentService.getStudentListByPage(name,phone,idCard,pageNum,pageSize,status);
+        return studentService.getStudentListByPage(school,grade,classes,name,studentid,pageNum,pageSize,status);
     }
 
     @PostMapping("/saveStudentInfo")
@@ -90,6 +92,17 @@ public class StudentController {
         return studentService.printBarCode(ids);
     }
 
+    /**
+     * 打印条形码成功后更新体检状态
+     * @param ids id数组
+     * @return
+     */
+    @PostMapping("/updateStatusAfterPrint")
+    public AppResponse<Integer> updateStatusAfterPrint(@RequestParam("ids[]") Integer[] ids){
+
+        return studentService.updateStatusAfterPrint(ids);
+    }
+
     @RequestMapping("/download")
     public ResponseEntity<Resource> downloadTempldate(){
 
@@ -106,7 +119,7 @@ public class StudentController {
     public ResponseEntity<Resource> downloadFile(){
 
         try{
-            String filePath = "/template/唐山眼科学生体检录入模板.xlsx";
+            String filePath = "/template/唐山市眼科医院学生体检信息模板.xlsx";
 
             // 使用ResourceLoader加载资源
             Resource resource = resourceLoader.getResource("classpath:" + filePath);
@@ -114,7 +127,7 @@ public class StudentController {
             if(resource.exists()){
                 // 设置下载响应头
                 HttpHeaders headers = new HttpHeaders();
-                String fileName = "唐山眼科学生体检录入模板.xlsx";
+                String fileName = "唐山市眼科医院学生体检信息模板.xlsx";
                 headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
                 headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 

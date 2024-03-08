@@ -37,13 +37,19 @@ public class Student implements Serializable {
 
     public String school;
 
+    public String grade;
+
     public String classes;
 
     public String address;
 
+    public String age;
+
+    public String studentid;
+
     public String birth;
 
-    public String status;
+    public Integer status;
 
     public String createTime;
 }

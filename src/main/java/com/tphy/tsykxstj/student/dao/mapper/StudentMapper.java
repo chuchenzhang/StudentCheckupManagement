@@ -21,24 +21,41 @@ import java.util.List;
 @Mapper
 public interface StudentMapper {
 
+    /**
+     * 保存学生信息
+     * @param student   学生实体类
+     * @return          新增结果
+     */
     Integer save(Student student);
 
-    List<Student> getStudentListByPage(@Param("name") String name,
-                                       @Param("phone") String phone,
-                                       @Param("idCard") String idCard,
+    /**
+     * 分页查询
+     */
+    List<Student> getStudentListByPage(@Param("school") String school,
+                                       @Param("grade") String grade,
+                                       @Param("classes") String classes,
+                                       @Param("name") String name,
+                                       @Param("studentid") String studentid,
                                        @Param("status") Integer[] status,
                                        RowBounds rowBounds);
 
     Integer update(Student student);
 
-    Integer getTotalCount(@Param("name") String name,
-                          @Param("phone") String phone,
-                          @Param("idCard") String idCard,
+    Integer getTotalCount(@Param("school") String school,
+                          @Param("grade") String grade,
+                          @Param("classes") String classes,
+                          @Param("name") String name,
+                          @Param("studentid") String studentid,
                           @Param("status") Integer[] status);
 
     List<Student> getBarCodeData(@Param("ids") Integer[] ids);
 
-
+    /**
+     * 新增学生信息同时新增状态关联表
+     * @param stuId     主键ID
+     * @param status    状态
+     * @return          新增结果
+     */
     Integer saveStatus(@Param("stuId") Integer stuId,@Param("status") Integer status);
 
     int isRepeatIdCard(@Param("idCard") String idCard);

@@ -85,7 +85,7 @@ public class SMSTask {
                 }
             }
         }
-
+        log.info(String.format("定时任务执行完毕：" + PATTERN, (now)));
         System.out.println("spring task 这是定时任务，时间是：" + PATTERN.format(now));
     }
 

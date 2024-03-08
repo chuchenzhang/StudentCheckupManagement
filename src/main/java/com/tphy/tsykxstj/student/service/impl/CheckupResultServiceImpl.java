@@ -71,9 +71,9 @@ public class CheckupResultServiceImpl implements CheckupResultService {
             return res.empty(data);
         }
 
-        String idCard = data.getStudent().getIdCard();
+        // String idCard = data.getStudent().getIdCard();
 
-        data.getStudent().setBirth(getBirthdayFromIdCard(idCard));
+        // data.getStudent().setBirth(getBirthdayFromIdCard(idCard));
 
         return res.success("查询成功",data);
     }

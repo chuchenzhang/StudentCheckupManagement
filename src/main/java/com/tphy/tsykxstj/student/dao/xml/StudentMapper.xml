@@ -7,9 +7,9 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.tphy.tsykxstj.student.dto.Student">
         insert into student_info
-        (name, gender, idCard, phone, school, classes, address, create_time)
+        (school, grade, classes, name, gender, age, studentid, create_time)
         values
-        (#{name},#{gender},#{idCard},#{phone},#{school},#{classes},#{address},NOW())
+        (#{school},#{grade},#{classes},#{name},#{gender},#{age},#{studentid},NOW())
     </insert>
     <insert id="saveStatus">
         insert into student_status
@@ -50,13 +50,13 @@
     <select id="getStudentListByPage" resultType="com.tphy.tsykxstj.student.dto.Student">
         select
                id,
+               school,
+               grade,
+               classes,
                name,
                gender,
-               idCard,
-               phone,
-               school,
-               classes,
-               address,
+               age,
+               studentid,
                status,
                create_time
         from student_info a
@@ -65,16 +65,22 @@
         <foreach collection="status" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        <if test="school != null and school != '' ">
+            and school = #{school}
+        </if>
+        <if test="grade != null and grade != '' ">
+            and grade = #{grade}
+        </if>
+        <if test="classes != null and classes != '' ">
+            and classes = #{classes}
+        </if>
         <if test="name != null and name != ''">
            and name like concat('%',#{name},'%')
         </if>
-        <if test="phone != null and phone != ''">
-           and phone like concat('%',#{phone},'%')
+        <if test="studentid != null and studentid != ''">
+           and studentid = #{studentid}
         </if>
-        <if test="idCard != null and idCard != ''">
-           and idCard = #{idCard}
-        </if>
-        order by create_time desc,id
+        order by status desc,create_time desc,id
     </select>
     <select id="getTotalCount" resultType="java.lang.Integer">
         select count(id) from student_info a
@@ -83,22 +89,30 @@
         <foreach collection="status" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        <if test="school != null and school != '' ">
+            and school = #{school}
+        </if>
+        <if test="grade != null and grade != '' ">
+            and grade = #{grade}
+        </if>
+        <if test="classes != null and classes != '' ">
+            and classes = #{classes}
+        </if>
         <if test="name != null and name != ''">
             and name like concat('%',#{name},'%')
         </if>
-        <if test="phone != null and phone != ''">
-            and phone like concat('%',#{phone},'%')
-        </if>
-        <if test="idCard != null and idCard != ''">
-            and idCard = #{idCard}
+        <if test="studentid != null and studentid != ''">
+            and studentid = #{studentid}
         </if>
     </select>
     <select id="getBarCodeData" resultType="com.tphy.tsykxstj.student.dto.Student">
         select id,
                name,
                phone,
-               idCard
-        from student_info
+               idCard,
+               status
+        from student_info a
+        left join student_status b on b.stu_id = a.id
         where id in
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
