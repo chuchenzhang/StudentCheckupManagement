@@ -237,4 +237,26 @@ public class StudentServiceImpl implements StudentService {
         log.info("共打印"+count+"名学生信息,状态更新成功");
         return res.success("共打印"+count+"名学生信息",count);
     }
+
+    @Override
+    public AppResponse<HashMap<String,List<String>>> getSchoolGradeClass(String school,String grade) {
+        AppResponse<HashMap<String,List<String>>> res = new AppResponse<>();
+
+        HashMap<String,List<String>> data = new HashMap<>();
+
+        List<String> schoolList = studentMapper.getSchool();
+        data.put("school",schoolList);
+
+        if(!"".equals(school)){
+            List<String> gradeList = studentMapper.getGrade(school);
+            data.put("grade",gradeList);
+        }
+        if(!"".equals(grade)){
+            List<String> classList = studentMapper.getClasses(grade);
+            data.put("classList",classList);
+        }
+
+
+        return res.success("请求成功",data);
+    }
 }

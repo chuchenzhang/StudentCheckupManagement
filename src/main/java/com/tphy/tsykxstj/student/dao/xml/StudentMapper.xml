@@ -124,4 +124,22 @@
         where idCard = #{idCard}
     </select>
 
+    <select id="getSchool" resultType="java.lang.String">
+        select school
+        from student_info
+        group by school
+    </select>
+    <select id="getGrade" resultType="java.lang.String">
+        select grade
+        from student_info
+        where school = #{school}
+        group by grade
+    </select>
+    <select id="getClasses" resultType="java.lang.String">
+        select classes
+        from student_info
+        where grade = #{grade}
+        group by classes
+    </select>
+
 </mapper>

@@ -144,4 +144,11 @@ public class StudentController {
         return null;
     }
 
+    @GetMapping("/getSelectData")
+    public AppResponse<HashMap<String,List<String>>> getSchoolGradeClass(@RequestParam(value = "school", required = false) String school,
+                                                                         @RequestParam(value = "grade", required = false) String grade){
+
+        return studentService.getSchoolGradeClass(school,grade);
+    }
+
 }

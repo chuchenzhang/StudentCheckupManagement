@@ -69,4 +69,12 @@ public interface StudentService {
      * @return      更新结果
      */
     AppResponse<Integer> updateStatusAfterPrint(Integer[] ids);
+
+    /**
+     * 获取学校和班级年纪下拉框
+     * @param school
+     * @param grade
+     * @return
+     */
+    AppResponse<HashMap<String,List<String>>> getSchoolGradeClass(String school,String grade);
 }
