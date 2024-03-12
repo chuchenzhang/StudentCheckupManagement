@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -104,9 +104,9 @@ public class StudentController {
     }
 
     @RequestMapping("/download")
-    public ResponseEntity<Resource> downloadTempldate(){
+    public ResponseEntity<FileSystemResource> downloadTempldate(){
 
-        ResponseEntity<Resource> res = downloadFile();
+        ResponseEntity<FileSystemResource> res = downloadFile();
 
         if(res == null){
             log.error("模板文件下载失败");
@@ -116,32 +116,48 @@ public class StudentController {
         return res;
     }
 
-    public ResponseEntity<Resource> downloadFile(){
+    public ResponseEntity<FileSystemResource> downloadFile(){
 
         try{
-            String filePath = "/template/唐山市眼科医院学生体检信息模板.xlsx";
+            String projectPath = System.getProperty("user.dir");
 
-            // 使用ResourceLoader加载资源
-            Resource resource = resourceLoader.getResource("classpath:" + filePath);
+            String filePath = projectPath + "/template/唐山市眼科医院学生体检信息模板.xlsx";
 
-            if(resource.exists()){
-                // 设置下载响应头
-                HttpHeaders headers = new HttpHeaders();
-                String fileName = "唐山市眼科医院学生体检信息模板.xlsx";
-                headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
-                headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            // 创建文件资源
+            FileSystemResource fileResource = new FileSystemResource(new File(filePath));
+            System.out.println("fileResource = " + fileResource);
 
-                // 返回文件响应
-                return ResponseEntity.ok()
-                        .headers(headers)
-                        .body(resource);
-            }
+            // 设置响应头
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "唐山市眼科医院学生体检信息模板.xlsx");
+
+            // 返回响应实体
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .body(fileResource);
+
+            // // 使用ResourceLoader加载资源
+            // Resource resource = resourceLoader.getResource("classpath:" + filePath);
+            //
+            // if(resource.exists()){
+            //     // 设置下载响应头
+            //     HttpHeaders headers = new HttpHeaders();
+            //     String fileName = "唐山市眼科医院学生体检信息模板.xlsx";
+            //     headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+            //     headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            //
+            //     // 返回文件响应
+            //     return ResponseEntity.ok()
+            //             .headers(headers)
+            //             .body(resource);
+            // }
         }catch (Exception e){
             log.error("模板文件下载失败");
             e.printStackTrace();
             return null;
         }
-        return null;
     }
 
     @GetMapping("/getSelectData")

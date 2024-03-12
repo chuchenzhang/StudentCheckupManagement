@@ -141,5 +141,10 @@
         where grade = #{grade}
         group by classes
     </select>
+    <select id="isRepeat" resultType="java.lang.Integer">
+        select id
+        from student_info
+        where school = #{school} and studentid = #{studentid}
+    </select>
 
 </mapper>

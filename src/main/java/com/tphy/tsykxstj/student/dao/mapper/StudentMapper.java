@@ -65,4 +65,6 @@ public interface StudentMapper {
     List<String> getGrade(String school);
 
     List<String> getClasses(String grade);
+
+    Integer isRepeat(@Param("school") String school, @Param("studentid") String studentid);
 }
