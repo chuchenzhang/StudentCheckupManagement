@@ -54,24 +54,29 @@
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.tphy.tsykxstj.student.dto.CheckupResult">
         insert into checkup_res
-            (stu_id, naked_vision_l, naked_vision_r,
-             pre_glasses_degree, medical_history,
-             co_sphere_l, co_sphere_r, co_cylinder_l,
-             co_cylinder_r, co_axis_position_l,
-             co_axis_position_r, co_pd_l, co_pd_r,
-             eye_pressure_l, eye_pressure_r, ocular_axis_l,
-             ocular_axis_r, ocular_position, hyperopia_reserve,
-             conjunctiva, cornea, lens, eye_ground, result,
-             doctor_suggestion, doctor_id, doctor_name,create_time)
-         values
-         (
-          #{stuId},#{nakedVisionL},#{nakedVisionR},#{preGlassesDegree},
-          #{medicalHistory},#{coSphereL},#{coSphereR},#{coCylinderL},#{coCylinderR},
-          #{coAxisPositionL},#{coAxisPositionR},#{coPdL},#{coPdR},
-          #{eyePressureL},#{eyePressureR},#{ocularAxisL},
-          #{ocularAxisR},#{ocularPosition},#{hyperopiaReserve},#{conjunctiva},#{cornea},#{lens},#{eyeGround},
-          #{result},#{doctorSuggestion},#{doctorId},#{doctorName},NOW()
-          )
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                stu_id,
+                <if test="nakedVisionL != null">naked_vision_l,</if>
+                <if test="nakedVisionR != null">naked_vision_r,</if>
+                <if test="coSphereL != null">co_sphere_l,</if>
+                <if test="coSphereR != null">co_sphere_r,</if>
+                <if test="coCylinderL != null">co_cylinder_l,</if>
+                <if test="coCylinderR != null">co_cylinder_r,</if>
+                <if test="coAxisPositionL != null">co_axis_position_l,</if>
+                <if test="coAxisPositionR != null">co_axis_position_r</if>
+            </trim>
+        values
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                #{stuId},
+                <if test="nakedVisionL != null">#{nakedVisionL},</if>
+                <if test="nakedVisionR != null">#{nakedVisionR},</if>
+                <if test="coSphereL != null">#{coSphereL},</if>
+                <if test="coSphereR != null">#{coSphereR},</if>
+                <if test="coCylinderL != null">#{coCylinderL},</if>
+                <if test="coCylinderR != null">#{coCylinderR},</if>
+                <if test="coAxisPositionL != null">#{coAxisPositionL},</if>
+                <if test="coAxisPositionR != null">#{coAxisPositionR}</if>
+            </trim>
     </insert>
     <update id="update">
         update checkup_res

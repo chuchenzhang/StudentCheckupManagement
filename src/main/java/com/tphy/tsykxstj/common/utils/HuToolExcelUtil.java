@@ -42,17 +42,15 @@ public class HuToolExcelUtil {
      *
      * @param path 需要写入的Excel 的路径
      * @param list 写入的内容
-     * @return
+     * @return     void
      */
     public static <T> void writeExcel(String path, List<T> list, Class<T> beanType) {
-        Map headerAlias = getHeaderAlias(beanType, false);
+        Map<String,String> headerAlias = getHeaderAlias(beanType, false);
         try (OutputStream out = new FileOutputStream(path); ExcelWriter writer = ExcelUtil.getWriter()) {
             writer.setHeaderAlias(headerAlias);
             // 写入并刷盘
             writer.write(list)
                     .flush(out);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -65,11 +63,11 @@ public class HuToolExcelUtil {
      * @param isRead   每个键值对格式为 ("已有的","想改的")
      *                 true 读取时 每个键值对格式为:(“别名”, “字段名”), 从excel中读取到“已有的(别名)”, 改为“想改的(字段名)”
      *                 false 写入时 每个键值对格式为:(“字段名”, “别名”), 每个字段对应的“已有的(字段名)”, 改为“想改的(别名)”
-     * @param <T>
-     * @return
+     * @param <T>      泛型
+     * @return         Map<String,String>
      */
     static <T> Map<String, String> getHeaderAlias(Class<T> beanType, boolean isRead) {
-        Map headerAlias = new HashMap<String, String>();
+        Map<String,String> headerAlias = new HashMap<String, String>();
         // Hutool 获取字段集合的方法，无需try/catch
         List<Field> fields = Arrays.asList(ReflectUtil.getFields(beanType));
         if (fields.isEmpty()) {

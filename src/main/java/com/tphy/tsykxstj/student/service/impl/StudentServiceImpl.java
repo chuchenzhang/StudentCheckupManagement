@@ -148,106 +148,9 @@ public class StudentServiceImpl implements StudentService {
 
         try{
 
-            // ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
-            // 忽略第0行表头，从第1行开始读数据
+            // 读取excel数据
             List<Template> templateList = HuToolExcelUtil.redaExcel(file.getInputStream(),Template.class);
             System.out.println("templateList = " + templateList);
-
-            // List<Student> studentList = new ArrayList<>();
-            // List<CheckupResult> checkupList = new ArrayList<>();
-
-            // System.out.println("checkupList = " + checkupList);
-
-            // 插入学生信息
-
-            // 准备数据
-/*            for(List<Object> row : list){
-
-                System.out.println("row = " + row);
-
-                Student student = new Student();
-
-                CheckupResult checkup = new CheckupResult();
-
-                // 学生信息
-                student.setSchool(row.get(0).toString());
-                student.setGrade(row.get(1).toString());
-                student.setClasses(row.get(2).toString());
-                student.setName(row.get(3).toString());
-                student.setGender(row.get(4).toString());
-                student.setAge(row.get(5).toString());
-                student.setStudentid(row.get(6).toString());
-                System.out.println("row.size() = " + row.size());
-                // 体检结果
-                if(row.size() > 7){
-                    if("H".equals(row.get(7).toString())){
-                        checkup.setNakedVisionR(null);
-                    }else{
-                        // 右裸眼
-                        checkup.setNakedVisionR(Float.parseFloat(row.get(7).toString()));
-                    }
-                }
-                if(row.size() > 8){
-                    if("I".equals(row.get(8).toString())){
-                        checkup.setNakedVisionL(null);
-                    }else{
-                        // 左裸眼
-                        checkup.setNakedVisionL(Float.parseFloat(row.get(8).toString()));
-                    }
-                }
-                if(row.size() > 9){
-                    if("J".equals(row.get(9).toString())){
-                        checkup.setCoSphereR(null);
-                    }else{
-                        // 右球镜
-                        checkup.setCoSphereR(Float.parseFloat(row.get(9).toString()));
-                    }
-                }
-                if(row.size() > 10){
-                    if("K".equals(row.get(10).toString())){
-                        checkup.setCoCylinderR(null);
-                    }else{
-                        // 右柱镜
-                        checkup.setCoCylinderR(Float.parseFloat(row.get(10).toString()));
-                    }
-                }
-                if(row.size() > 11){
-                    if("L".equals(row.get(11).toString())){
-                        checkup.setCoAxisPositionR(null);
-                    }else{
-                        // 右轴位
-                        checkup.setCoAxisPositionR(Float.parseFloat(row.get(11).toString()));
-                    }
-                }
-                if(row.size() > 12){
-                    if("M".equals(row.get(12).toString())){
-                        checkup.setCoSphereL(null);
-                    }else{
-                        // 左球镜
-                        checkup.setCoSphereL(Float.parseFloat(row.get(12).toString()));
-                    }
-                }
-                if(row.size() > 13){
-                    if("N".equals(row.get(13).toString())){
-                        checkup.setCoCylinderL(null);
-                    }else{
-                        // 左柱镜
-                        checkup.setCoCylinderL(Float.parseFloat(row.get(13).toString()));
-                    }
-                }
-                if(row.size() > 14){
-                    if("O".equals(row.get(14).toString())){
-                        checkup.setCoAxisPositionL(null);
-                    }else{
-                        // 左轴位
-                        checkup.setCoAxisPositionL(Float.parseFloat(row.get(14).toString()));
-                    }
-                }
-
-                studentList.add(student);
-                checkupList.add(checkup);
-            }*/
-
 
             int rowAffect = 0;
             int checkupNumber = 0;
@@ -255,10 +158,7 @@ public class StudentServiceImpl implements StudentService {
             // 插入学生信息
             for(Template row : templateList){
 
-                // 查询数据库是否有该学生信息
-                Integer isRepeatId = studentMapper.isRepeat(row.getSchool(),row.getStudentid());
-                System.out.println("isRepeatId = " + isRepeatId);
-
+                // 准备体检结果信息
                 CheckupResult checkup = new CheckupResult();
 
                 checkup.setNakedVisionR(row.getNakedVisionR());
@@ -270,10 +170,13 @@ public class StudentServiceImpl implements StudentService {
                 checkup.setCoCylinderR(row.getCoCylinderR());
                 checkup.setCoCylinderL(row.getCoCylinderL());
 
+                // 查询数据库是否有该学生信息
+                Integer isRepeatId = studentMapper.isRepeat(row.getSchool(),row.getStudentid());
+                System.out.println("isRepeatId = " + isRepeatId);
                 // 新增学生信息
                 if(isRepeatId == null) {
+                    // 准备学生信息
                     Student stu = new Student();
-
                     stu.setSchool(row.getSchool());
                     stu.setGrade(row.getGrade());
                     stu.setClasses(row.getClasses());
