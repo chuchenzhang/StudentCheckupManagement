@@ -144,7 +144,13 @@
     <select id="isRepeat" resultType="java.lang.Integer">
         select id
         from student_info
-        where school = #{school} and studentid = #{studentid}
+        where school = #{school}
+          and grade = #{grade}
+          and classes = #{classes}
+          and name = #{name}
+          <if test="studentid != null">
+              and studentid = #{studentid}
+          </if>
     </select>
 
 </mapper>

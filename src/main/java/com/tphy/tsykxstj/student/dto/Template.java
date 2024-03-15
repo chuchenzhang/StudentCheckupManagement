@@ -60,7 +60,7 @@ public class Template implements Serializable {
     public Float coCylinderR;
 
     @ExcelAlias(value = "右轴位")
-    public Float coAxisPositionR;
+    public Integer coAxisPositionR;
 
     @ExcelAlias(value = "左球镜")
     public Float coSphereL;
@@ -69,5 +69,5 @@ public class Template implements Serializable {
     public Float coCylinderL;
 
     @ExcelAlias(value = "左轴位")
-    public Float coAxisPositionL;
+    public Integer coAxisPositionL;
 }

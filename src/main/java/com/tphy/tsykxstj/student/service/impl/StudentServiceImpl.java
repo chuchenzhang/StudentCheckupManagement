@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -151,42 +152,73 @@ public class StudentServiceImpl implements StudentService {
             // 读取excel数据
             List<Template> templateList = HuToolExcelUtil.redaExcel(file.getInputStream(),Template.class);
             System.out.println("templateList = " + templateList);
+            // 创建DecimalFormat对象，保留两位小数
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
             int rowAffect = 0;
             int checkupNumber = 0;
             int i = 0;
             // 插入学生信息
             for(Template row : templateList){
-
+                // System.out.println("decimalFormat.format(row.getNakeVisionR()) = " + decimalFormat.format(row.getNakedVisionR()));
                 // 准备体检结果信息
                 CheckupResult checkup = new CheckupResult();
-
-                checkup.setNakedVisionR(row.getNakedVisionR());
-                checkup.setNakedVisionL(row.getNakedVisionL());
-                checkup.setCoSphereR(row.getCoSphereR());
-                checkup.setCoSphereL(row.getCoSphereL());
+                // 裸眼右 保留两位小数
+                if (row.getNakedVisionR() == null) {
+                    checkup.setNakedVisionR(row.getNakedVisionR());
+                } else {
+                    checkup.setNakedVisionR(Float.parseFloat(decimalFormat.format(row.getNakedVisionR())));
+                }
+                // 裸眼左 保留两位小数
+                if(row.getNakedVisionL() == null){
+                    checkup.setNakedVisionL(row.getNakedVisionL());
+                }else{
+                    checkup.setNakedVisionL(Float.parseFloat(decimalFormat.format(row.getNakedVisionL())));
+                }
+                // 右球镜 保留两位小数
+                if(row.getCoSphereR() == null){
+                    checkup.setCoSphereR(row.getCoSphereR());
+                }else{
+                    checkup.setCoSphereR(Float.parseFloat(decimalFormat.format(row.getCoSphereR())));
+                }
+                // 右柱镜 保留两位小数
+                if(row.getCoCylinderR() == null){
+                    checkup.setCoCylinderR(row.getCoCylinderR());
+                }else{
+                    checkup.setCoCylinderR(Float.parseFloat(decimalFormat.format(row.getCoCylinderR())));
+                }
+                // 右轴位 保留至整数
                 checkup.setCoAxisPositionR(row.getCoAxisPositionR());
+                // 左球镜 保留两位小数
+                if(row.getCoSphereL() == null){
+                    checkup.setCoSphereL(row.getCoSphereL());
+                }else{
+                    checkup.setCoSphereL(Float.parseFloat(decimalFormat.format(row.getCoSphereL())));
+                }
+                // 左柱镜 保留两位小数
+                if(row.getCoCylinderL() == null){
+                    checkup.setCoCylinderL(row.getCoCylinderL());
+                }else{
+                    checkup.setCoCylinderL(Float.parseFloat(decimalFormat.format(row.getCoCylinderL())));
+                }
+                // 左轴位 保留至整数
                 checkup.setCoAxisPositionL(row.getCoAxisPositionL());
-                checkup.setCoCylinderR(row.getCoCylinderR());
-                checkup.setCoCylinderL(row.getCoCylinderL());
+
+                // 准备学生信息
+                Student stu = new Student();
+                stu.setSchool(row.getSchool());
+                stu.setGrade(row.getGrade());
+                stu.setClasses(row.getClasses());
+                stu.setName(row.getName());
+                stu.setGender(row.getGender());
+                stu.setAge(row.getAge());
+                stu.setStudentid(row.getStudentid());
 
                 // 查询数据库是否有该学生信息
-                Integer isRepeatId = studentMapper.isRepeat(row.getSchool(),row.getStudentid());
-                System.out.println("isRepeatId = " + isRepeatId);
+                Integer isRepeatStu = studentMapper.isRepeat(stu);
                 // 新增学生信息
-                if(isRepeatId == null) {
-                    // 准备学生信息
-                    Student stu = new Student();
-                    stu.setSchool(row.getSchool());
-                    stu.setGrade(row.getGrade());
-                    stu.setClasses(row.getClasses());
-                    stu.setName(row.getName());
-                    stu.setGender(row.getGender());
-                    stu.setAge(row.getAge());
-                    stu.setStudentid(row.getStudentid());
-
+                if(isRepeatStu == null) {
                     Integer stuId = studentMapper.save(stu);
-                    System.out.println("stu.getId() = " + stu.getId());
                     // 新增状态
                     Integer stuNum = studentMapper.saveStatus(stu.getId(),-2);
                     if(stuId > 0 && stuNum > 0){
@@ -199,11 +231,24 @@ public class StudentServiceImpl implements StudentService {
                     checkup.setStuId(stu.getId());
                 }else{
                     // 体检结果插入学生ID
-                    checkup.setStuId(isRepeatId);
+                    checkup.setStuId(isRepeatStu);
                 }
-                // 插入体检结果
-                Integer rowCount = checkupMapper.save(checkup);
 
+                // 查询该学生是否录入体检结果
+                Integer stuId =isRepeatStu == null ? 0 : isRepeatStu;
+                System.out.println("stuId = " + stuId);
+                CheckupResult isRepeatCheckup = checkupMapper.findByStuId(stuId);
+                System.out.println("isRepeatCheckup = " + isRepeatCheckup);
+                Integer rowCount = 0;
+                // TODO 体检结果还是能重复导入
+                if(isRepeatCheckup != null){
+                    // 若体检结果存在，则更新体检结果
+                    checkup.setId(isRepeatCheckup.getId());
+                    rowCount = checkupMapper.update(checkup);
+                }else{
+                    // 新增体检结果
+                    rowCount = checkupMapper.save(checkup);
+                }
                 // 更新状态
                 Integer num = checkupMapper.updateStatus(checkup.getStuId(),1);
 

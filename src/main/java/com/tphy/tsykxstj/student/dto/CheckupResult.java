@@ -71,12 +71,12 @@ public class CheckupResult implements Serializable {
     /**
      * 电脑验光-轴位-左OS
      */
-    public Float coAxisPositionL;
+    public Integer coAxisPositionL;
 
     /**
      * 电脑验光-轴位-右OD
      */
-    public Float coAxisPositionR;
+    public Integer coAxisPositionR;
 
     /**
      * 电脑验光-瞳距-左OS
