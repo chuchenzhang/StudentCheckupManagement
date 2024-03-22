@@ -156,4 +156,15 @@ public class CheckupResult implements Serializable {
 
     public Student student;
 
+    public boolean empty(){
+        return  nakedVisionL == null &&
+                nakedVisionR == null &&
+                coSphereL == null &&
+                coSphereR == null &&
+                coCylinderL == null &&
+                coCylinderR == null &&
+                coAxisPositionL == null
+                && coAxisPositionR == null;
+    }
+
 }

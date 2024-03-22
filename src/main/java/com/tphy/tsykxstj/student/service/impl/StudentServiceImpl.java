@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -157,6 +158,7 @@ public class StudentServiceImpl implements StudentService {
 
             int rowAffect = 0;
             int checkupNumber = 0;
+            int updateResCount = 0;
             int i = 0;
             // 插入学生信息
             for(Template row : templateList){
@@ -165,44 +167,52 @@ public class StudentServiceImpl implements StudentService {
                 CheckupResult checkup = new CheckupResult();
                 // 裸眼右 保留两位小数
                 if (row.getNakedVisionR() == null) {
-                    checkup.setNakedVisionR(row.getNakedVisionR());
+                    // checkup.setNakedVisionR(row.getNakedVisionR());
                 } else {
                     checkup.setNakedVisionR(Float.parseFloat(decimalFormat.format(row.getNakedVisionR())));
                 }
                 // 裸眼左 保留两位小数
                 if(row.getNakedVisionL() == null){
-                    checkup.setNakedVisionL(row.getNakedVisionL());
+                    // checkup.setNakedVisionL(row.getNakedVisionL());
                 }else{
                     checkup.setNakedVisionL(Float.parseFloat(decimalFormat.format(row.getNakedVisionL())));
                 }
                 // 右球镜 保留两位小数
                 if(row.getCoSphereR() == null){
-                    checkup.setCoSphereR(row.getCoSphereR());
+                    // checkup.setCoSphereR(row.getCoSphereR());
                 }else{
                     checkup.setCoSphereR(Float.parseFloat(decimalFormat.format(row.getCoSphereR())));
                 }
                 // 右柱镜 保留两位小数
                 if(row.getCoCylinderR() == null){
-                    checkup.setCoCylinderR(row.getCoCylinderR());
+                    // checkup.setCoCylinderR(row.getCoCylinderR());
                 }else{
                     checkup.setCoCylinderR(Float.parseFloat(decimalFormat.format(row.getCoCylinderR())));
                 }
                 // 右轴位 保留至整数
-                checkup.setCoAxisPositionR(row.getCoAxisPositionR());
+                if(row.getCoAxisPositionR() == null){
+
+                }else{
+                    checkup.setCoAxisPositionR(row.getCoAxisPositionR());
+                }
                 // 左球镜 保留两位小数
                 if(row.getCoSphereL() == null){
-                    checkup.setCoSphereL(row.getCoSphereL());
+                    // checkup.setCoSphereL(row.getCoSphereL());
                 }else{
                     checkup.setCoSphereL(Float.parseFloat(decimalFormat.format(row.getCoSphereL())));
                 }
                 // 左柱镜 保留两位小数
                 if(row.getCoCylinderL() == null){
-                    checkup.setCoCylinderL(row.getCoCylinderL());
+                    // checkup.setCoCylinderL(row.getCoCylinderL());
                 }else{
                     checkup.setCoCylinderL(Float.parseFloat(decimalFormat.format(row.getCoCylinderL())));
                 }
                 // 左轴位 保留至整数
-                checkup.setCoAxisPositionL(row.getCoAxisPositionL());
+                if(row.getCoAxisPositionL() == null){
+
+                }else{
+                    checkup.setCoAxisPositionL(row.getCoAxisPositionL());
+                }
 
                 // 准备学生信息
                 Student stu = new Student();
@@ -228,45 +238,48 @@ public class StudentServiceImpl implements StudentService {
                         throw new Exception("第" + i + "条学生数据导入失败");
                     }
                     // 体检结果插入学生ID
-                    checkup.setStuId(stu.getId());
+                    if(!ObjectUtils.isEmpty(checkup)){
+                        checkup.setStuId(stu.getId());
+                    }
                 }else{
                     // 体检结果插入学生ID
-                    checkup.setStuId(isRepeatStu);
+                    if(!ObjectUtils.isEmpty(checkup)) {
+                        checkup.setStuId(isRepeatStu);
+                    }
                 }
 
                 // 查询该学生是否录入体检结果
-                Integer stuId =isRepeatStu == null ? 0 : isRepeatStu;
+                Integer stuId = isRepeatStu == null ? 0 : isRepeatStu;
                 System.out.println("stuId = " + stuId);
                 CheckupResult isRepeatCheckup = checkupMapper.findByStuId(stuId);
                 System.out.println("isRepeatCheckup = " + isRepeatCheckup);
                 Integer rowCount = 0;
-                // TODO 体检结果还是能重复导入
-                if(isRepeatCheckup != null){
+                Integer upCount = 0;
+                if(isRepeatCheckup != null && !ObjectUtils.isEmpty(checkup)){
                     // 若体检结果存在，则更新体检结果
+                    log.info("更新体检结果");
                     checkup.setId(isRepeatCheckup.getId());
-                    rowCount = checkupMapper.update(checkup);
+                    upCount = checkupMapper.update(checkup);
                 }else{
                     // 新增体检结果
-                    rowCount = checkupMapper.save(checkup);
+                    System.out.println("checkup = " + checkup);
+                    log.info("新增体检结果");
+                    if(!checkup.empty()){
+                        rowCount = checkupMapper.save(checkup);
+                        // 更新状态
+                        Integer num = checkupMapper.updateStatus(checkup.getStuId(),1);
+                    }
                 }
-                // 更新状态
-                Integer num = checkupMapper.updateStatus(checkup.getStuId(),1);
 
-                if(rowCount > 0 && num > 0){
-                    checkupNumber += rowCount;
-                }else{
-                    log.info("体检结果录入失败：" + checkup.toString());
-                    throw new Exception("第" + i + "条体检数据导入失败");
-                }
+                checkupNumber += rowCount;
+                updateResCount += upCount;
             }
-
-            if(rowAffect > 0 || checkupNumber > 0){
-                return res.success("成功导入" + rowAffect + "条学生数据，" + checkupNumber + "条体检信息");
-            }else{
-                return res.error("数据导入失败");
-            }
+            String message = "";
+            message += "成功导入" + rowAffect + "条学生数据，" + checkupNumber + "条体检信息，更新" + updateResCount + "条体检信息";
+            return res.success(message);
 
         }catch (Exception e){
+            log.info("体检数据导入失败");
             e.printStackTrace();
         }
 
